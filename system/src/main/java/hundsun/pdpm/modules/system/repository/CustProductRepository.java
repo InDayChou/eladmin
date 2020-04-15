@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 /**
 * @author yantt
-* @date 2019-12-05
+* @date 2020-03-30
 */
 public interface CustProductRepository extends JpaRepository<CustProduct, String>, JpaSpecificationExecutor<CustProduct> {
 List<CustProduct> findAllByIdIn(List<String> idlist);

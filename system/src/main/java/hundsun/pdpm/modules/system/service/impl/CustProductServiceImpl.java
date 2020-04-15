@@ -1,6 +1,7 @@
 package hundsun.pdpm.modules.system.service.impl;
 
 import hundsun.pdpm.modules.system.domain.CustProduct;
+import hundsun.pdpm.modules.datapermission.utils.PermissionUtils;
 import hundsun.pdpm.modules.system.service.DictDetailService;
 import org.springframework.util.CollectionUtils;
 import hundsun.pdpm.utils.ValidationUtil;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 import hundsun.pdpm.utils.*;
 /**
 * @author yantt
-* @date 2019-12-05
+* @date 2020-03-30
 */
 @Service
 @CacheConfig(cacheNames = "custProduct")
@@ -57,14 +58,20 @@ public class CustProductServiceImpl implements CustProductService {
     @Override
     @Cacheable
     public Map<String,Object> queryAll(CustProductQueryCriteria criteria, Pageable pageable){
-        Page<CustProduct> page = custProductRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
+        Page<CustProduct> page = custProductRepository.findAll((root, criteriaQuery, criteriaBuilder) ->
+                                   PermissionUtils.getPredicate(root,
+                                       QueryHelp.getPredicate(root,criteria,criteriaBuilder),
+                                       criteriaBuilder,CustProductDTO.class),pageable);
         return PageUtil.toPage(page.map(custProductMapper::toDto));
     }
 
     @Override
     @Cacheable
     public List<CustProductDTO> queryAll(CustProductQueryCriteria criteria){
-        return custProductMapper.toDto(custProductRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder)));
+        return custProductMapper.toDto(custProductRepository.findAll((root, criteriaQuery, criteriaBuilder) ->
+                                                PermissionUtils.getPredicate(root,
+                                                QueryHelp.getPredicate(root,criteria,criteriaBuilder),
+                                                criteriaBuilder,CustProductDTO.class)));
     }
 
     @Override
@@ -104,8 +111,8 @@ public class CustProductServiceImpl implements CustProductService {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public void delete(String id) {
-        custProductRepository.deleteById(id);
+    public void delete(List<String> id) {
+        custProductRepository.deleteAllByIdIn(id);
     }
 
 

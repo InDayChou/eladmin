@@ -79,11 +79,11 @@ public class ${className}Controller {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "/{${pkChangeColName}}")
+    @PostMapping(value = "/delete")
     @Log("删除${tableRealName}")
     @ApiOperation("删除${tableRealName}")
     @PreAuthorize("@el.check('${changeClassName}:del')")
-    public ResponseEntity delete(@PathVariable ${pkColumnType} ${pkChangeColName}){
+    public ResponseEntity delete(@PathVariable List<${pkColumnType}> ${pkChangeColName}){
         ${changeClassName}Service.delete(${pkChangeColName});
         return new ResponseEntity(HttpStatus.OK);
     }

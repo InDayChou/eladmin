@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -220,5 +221,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         s1 = nvl(s1, "");
         s2 = nvl(s2, "");
         return s1.compareTo(s2);
+    }
+    public static String listToString(List list, char separator) {
+        StringBuilder sb = new StringBuilder();
+        list.forEach(item->{
+            sb.append(item).append(separator);
+        });
+        return sb.toString().substring(0,sb.toString().length()-1);
     }
 }

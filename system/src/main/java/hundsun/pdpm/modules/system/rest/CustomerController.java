@@ -6,6 +6,7 @@ import hundsun.pdpm.modules.system.domain.Customer;
 import hundsun.pdpm.modules.system.service.CustomerService;
 import hundsun.pdpm.modules.system.service.dto.CustomerDTO;
 import hundsun.pdpm.modules.system.service.dto.CustomerQueryCriteria;
+import hundsun.pdpm.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
 * @author yantt
@@ -66,6 +69,9 @@ public class CustomerController {
     @ApiOperation("查询客户信息")
     @PreAuthorize("@el.check('customer:list')")
     public ResponseEntity getCustomers(CustomerQueryCriteria criteria, Pageable pageable){
+        if(!CollectionUtils.isEmpty(criteria.getId())) {
+             criteria.setIds(criteria.getId());
+        }
         return new ResponseEntity<>(customerService.queryAll(criteria,pageable),HttpStatus.OK);
     }
 
@@ -83,6 +89,15 @@ public class CustomerController {
     @PreAuthorize("@el.check('customer:edit')")
     public ResponseEntity update(@Validated @RequestBody Customer resources){
         customerService.update(resources);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(value = "/batchupdate")
+    @Log("批量修改客户信息")
+    @ApiOperation("批量修改客户信息")
+    @PreAuthorize("@el.check('customer:edit')")
+    public ResponseEntity batchUpdate( @RequestBody List<Customer> resources){
+        customerService.batchUpdate(resources);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

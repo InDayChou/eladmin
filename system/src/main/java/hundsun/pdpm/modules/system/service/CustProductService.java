@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 /**
 * @author yantt
-* @date 2019-12-05
+* @date 2020-03-30
 */
 public interface CustProductService {
 
@@ -43,7 +43,7 @@ public interface CustProductService {
 
     void update(CustProduct resources);
 
-    void delete(String id);
+    void delete(List<String> id);
 
     void download(List<CustProductDTO> all, HttpServletResponse response) throws IOException;
 

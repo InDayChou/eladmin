@@ -5,7 +5,7 @@ import hundsun.pdpm.annotation.Query;
 
 /**
 * @author yantt
-* @date 2019-12-05
+* @date 2020-03-30
 */
 @Data
 public class CustProductQueryCriteria{
@@ -22,7 +22,17 @@ public class CustProductQueryCriteria{
     @Query
     private String productId;
 
+    // 模糊
+    @Query(type = Query.Type.INNER_LIKE)
+    private String custProductType;
+
     // 精确
     @Query
-    private String versionType;
+    private String haveYeb;
+
+    @Query(type = Query.Type.INNER_LIKE)
+    private String statRequestDate;
+    // 模糊
+    @Query(type = Query.Type.INNER_LIKE)
+    private String statPerson;
 }

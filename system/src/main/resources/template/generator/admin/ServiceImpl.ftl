@@ -154,8 +154,8 @@ public class ${className}ServiceImpl implements ${className}Service {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public void delete(${pkColumnType} ${pkChangeColName}) {
-        ${changeClassName}Repository.deleteById(${pkChangeColName});
+    public void delete(List<${pkColumnType}> ${pkChangeColName}) {
+        ${changeClassName}Repository.deleteAllByIdIn(${pkChangeColName});
     }
 
 

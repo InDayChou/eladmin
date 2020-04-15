@@ -19,7 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 /**
 * @author yantt
-* @date 2019-12-05
+* @date 2020-03-30
 */
 @Api(tags = "CustProduct管理")
 @RestController
@@ -79,11 +79,11 @@ public class CustProductController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @PostMapping(value = "/delete")
     @Log("删除客户产品信息")
     @ApiOperation("删除客户产品信息")
     @PreAuthorize("@el.check('custProduct:del')")
-    public ResponseEntity delete(@PathVariable String id){
+    public ResponseEntity delete(@RequestBody List<String> id){
         custProductService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }

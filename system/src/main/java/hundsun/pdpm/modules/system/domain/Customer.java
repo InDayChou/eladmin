@@ -33,6 +33,27 @@ public class Customer implements Serializable {
     @Column(name = "cust_name",nullable = false)
     private String custName;
 
+
+    // 客户编号
+    @Column(name = "cust_no",nullable = false)
+    private String custNo;
+
+    // 客户业务类型
+    @Column(name = "cust_busin_type",nullable = false)
+    private String custBusinType;
+
+    // 客户产品类型
+    @Column(name = "cust_product_type",nullable = false)
+    private String custProductType;
+
+    // 父节点
+    @Column(name = "parent_id",nullable = false)
+    private String parentId;
+
+    @Column(name = "cust_have_product",nullable = false)
+    private String custHaveProduct;
+
+
     // 备注
     @Column(name = "memo")
     private String memo;

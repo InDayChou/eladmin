@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,7 +57,31 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable
     public Map<String,Object> queryAll(CustomerQueryCriteria criteria, Pageable pageable){
         Page<Customer> page = customerRepository.findAll((root, criteriaQuery, criteriaBuilder) -> PermissionUtils.getPredicate(root,QueryHelp.getPredicate(root,criteria,criteriaBuilder),criteriaBuilder,CustomerDTO.class),pageable);
-        return PageUtil.toPage(page.map(customerMapper::toDto));
+        List<CustomerDTO> customerDTOList = customerMapper.toDto(page.getContent());
+        if(!CollectionUtils.isEmpty(page.getContent())){
+            List<String> idList = page.getContent().stream().map(Customer::getId).collect(Collectors.toList());
+            CustomerQueryCriteria criteria1 = new CustomerQueryCriteria();
+            criteria1.setParentId(StringUtils.listToString(idList,','));
+            criteria1.setParentIds(criteria1.getParentId());
+            criteria1.setParentId(null);
+            List<CustomerDTO> childrens =  queryAll(criteria1);
+            Map<String,List<CustomerDTO>> groupCustomer = new HashMap<>();
+            for(CustomerDTO customer:childrens){
+                List<CustomerDTO> customerDTOS = new ArrayList<>();
+                if(groupCustomer.containsKey(customer.getParentId())){
+                    customerDTOS = groupCustomer.get(customer.getParentId());
+                }
+                customerDTOS.add(customer);
+                groupCustomer.put(customer.getParentId(),customerDTOS);
+            }
+            for(CustomerDTO customerDTO:customerDTOList){
+                if(groupCustomer.containsKey(customerDTO.getId())){
+                    customerDTO.setChildrens(groupCustomer.get(customerDTO.getId()));
+                }
+            }
+
+        }
+        return PageUtil.toPage(customerDTOList,page.getTotalElements());
     }
 
     @Override
@@ -100,6 +125,17 @@ public class CustomerServiceImpl implements CustomerService {
         ValidationUtil.isNull( customer.getId(),"Customer","id",resources.getId());
         customer.copy(resources);
         customerRepository.save(customer);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public void batchUpdate(List<Customer> resources) {
+        if(!CollectionUtils.isEmpty(resources)){
+            resources.forEach(item->{
+                update(item);
+            });
+        }
     }
 
     @Override

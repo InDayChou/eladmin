@@ -9,10 +9,11 @@ export function add(data) {
   })
 }
 
-export function del(${pkChangeColName}) {
+export function del(data) {
   return request({
-    url: BASE_SERVICE + '/' + ${pkChangeColName},
-    method: 'delete'
+    url: BASE_SERVICE + '/delete' ,
+    method: 'post',
+    data
   })
 }
 

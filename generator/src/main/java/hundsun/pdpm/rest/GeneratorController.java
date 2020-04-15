@@ -39,7 +39,7 @@ public class GeneratorController {
     public ResponseEntity getTables(@RequestParam(defaultValue = "") String name,
                                     @RequestParam(defaultValue = "0")Integer page,
                                     @RequestParam(defaultValue = "10")Integer size){
-        int[] startEnd = PageUtil.transToStartEnd(page+1, size);
+        int[] startEnd = PageUtil.transToStartEnd(page, size);
         return new ResponseEntity<>(generatorService.getTables(name,startEnd), HttpStatus.OK);
     }
 

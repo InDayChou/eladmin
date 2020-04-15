@@ -46,6 +46,8 @@ public interface CustomerService {
 
     void update(Customer resources);
 
+    void batchUpdate(List<Customer> resources);
+
     void delete(String id);
 
     void download(List<CustomerDTO> all, HttpServletResponse response) throws IOException;
